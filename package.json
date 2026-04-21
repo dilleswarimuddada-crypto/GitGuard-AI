@@ -1,0 +1,18 @@
+{
+  "name": "gitguard-ai",
+  "version": "1.0.0",
+  "description": "Automated AI-powered Pull Request code reviewer",
+  "main": "src/webhook.js",
+  "scripts": {
+    "start": "node src/webhook.js",
+    "dev": "nodemon src/webhook.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "@octokit/rest": "^20.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
