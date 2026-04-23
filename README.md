@@ -14,5 +14,6 @@ and posts a review comment directly on the PR.
 1. Clone the repo
 2. Copy `.env.example` to `.env` and fill in values
 3. Run `npm install`
-4. Run `npm start`
-
+4. Run the server:
+```bash
+GITHUB_WEBHOOK_SECRET=gitguard123 node src/webhook.js
