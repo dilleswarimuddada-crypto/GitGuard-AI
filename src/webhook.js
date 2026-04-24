@@ -51,13 +51,23 @@ app.post("/webhook", (req, res) => {
 
     // Only act when a PR is opened or updated
     if (action === "opened" || action === "synchronize") {
-      console.log(`\n🔍 PR is ready for review — Diff Analyzer will run here (Week 2)`);
-      // Week 2 hook: diffAnalyzer will be called here
+  // Week 2: Fetch diff and analyze
+  const [owner, repoName] = payload.repository.full_name.split("/");
+
+  const { fetchPRDiff } = require("./diffAnalyzer");
+  const { reviewCode } = require("./aiReviewer");
+
+  const diff = await fetchPRDiff(owner, repoName, prNumber);
+  if (diff) {
+    const review = await reviewCode(diff);
+    if (review) {
+      console.log("\n📋 AI REVIEW RESULT:");
+      console.log("─".repeat(50));
+      console.log(review);
+      console.log("─".repeat(50));
     }
   }
-
-  res.status(200).send("OK");
-});
+    }
 
 // ── Health Check ────────────────────────────────────────────────
 app.get("/", (req, res) => {
