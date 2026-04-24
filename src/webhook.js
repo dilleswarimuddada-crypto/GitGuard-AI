@@ -26,7 +26,7 @@ function verifyGitHubSignature(req) {
 }
 
 // ── Webhook Endpoint ────────────────────────────────────────────
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   // Step 1: Verify the request is genuinely from GitHub
   if (!verifyGitHubSignature(req)) {
     console.log("❌ Invalid signature — request rejected");
