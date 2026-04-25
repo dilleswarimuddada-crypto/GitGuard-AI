@@ -7,7 +7,7 @@ async function reviewCode(diff) {
     console.log("\n🤖 Sending diff to Gemini AI for review...");
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash" 
+      model: "gemini-1.5-flash-latest"
     });
 
     const prompt = `
@@ -31,7 +31,9 @@ ${diff}
     `;
 
     const result = await model.generateContent(prompt);
-    const response = result.response.text();
+
+    const response =
+      result.response.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
 
     console.log("✅ AI Review complete!");
     return response;
