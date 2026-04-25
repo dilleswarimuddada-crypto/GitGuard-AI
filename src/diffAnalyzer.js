@@ -1,4 +1,5 @@
 const { Octokit } = require("@octokit/rest");
+console.log("TOKEN:", process.env.GITHUB_TOKEN);
 
 // Debug (optional - remove later)
 console.log("🔑 GitHub Token Loaded:", process.env.GITHUB_TOKEN ? "YES" : "NO");
