@@ -1,27 +1,37 @@
 const { Octokit } = require("@octokit/rest");
 
+// Debug (optional - remove later)
+console.log("🔑 GitHub Token Loaded:", process.env.GITHUB_TOKEN ? "YES" : "NO");
+
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
+  auth: process.env.GITHUB_TOKEN,
 });
 
 async function fetchPRDiff(owner, repo, pullNumber) {
   try {
     console.log(`\n📂 Fetching diff for PR #${pullNumber}...`);
 
-    // Fetch list of files changed in the PR
     const { data: files } = await octokit.pulls.listFiles({
       owner,
       repo,
       pull_number: pullNumber,
     });
 
-    // Extract only added/modified lines from the diff
+    if (!files || files.length === 0) {
+      console.log("⚠️ No files found in PR");
+      return null;
+    }
+
     let cleanDiff = "";
+
     files.forEach((file) => {
       cleanDiff += `\n### File: ${file.filename}\n`;
       cleanDiff += `Status: ${file.status}\n`;
+
       if (file.patch) {
         cleanDiff += `Changes:\n${file.patch}\n`;
+      } else {
+        cleanDiff += "No patch available\n";
       }
     });
 
@@ -30,6 +40,12 @@ async function fetchPRDiff(owner, repo, pullNumber) {
 
   } catch (error) {
     console.error("❌ Error fetching diff:", error.message);
+
+    // Extra debug
+    if (error.status === 401) {
+      console.error("👉 Unauthorized: Check your GitHub token");
+    }
+
     return null;
   }
 }
