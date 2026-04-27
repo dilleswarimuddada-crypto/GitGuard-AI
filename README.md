@@ -17,5 +17,5 @@ and posts a review comment directly on the PR.
 4. Run `npm start`
 Testing new PR 
 test webhook again
-checking Week 2 level 
-Testing webhook after fixing token
+checking Week 2 level
+webhook token issue fixing
