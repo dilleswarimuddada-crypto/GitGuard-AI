@@ -1,45 +1,42 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const OpenAI = require("openai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 async function reviewCode(diff) {
   try {
-    console.log("\n🤖 Sending diff to Gemini AI for review...");
+    console.log("\n🤖 Sending diff to OpenAI for review...");
 
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest"
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: `
+You are an expert code reviewer. Analyze the following code diff and identify:
+
+1. Bugs or logical errors
+2. Security vulnerabilities
+3. Performance issues
+4. Suggestions for improvement
+
+Provide clear explanations and improved code if needed.
+
+Code diff:
+${diff}
+          `,
+        },
+      ],
     });
 
-    const prompt = `
-You are an expert code reviewer. Analyze the following code diff and identify:
-1. 🐛 Bugs or logical errors
-2. 🔒 Security vulnerabilities  
-3. ⚡ Performance issues
-4. 💡 Suggestions for improvement
-
-For each issue found, provide:
-- The problem description
-- The affected code
-- The corrected code block
-
-Format your response in clean Markdown.
-If the code looks good, say so clearly.
-
-Here is the code diff to review:
-
-${diff}
-    `;
-
-    const result = await model.generateContent(prompt);
-
-    const response =
-      result.response.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    const result = response.choices[0].message.content;
 
     console.log("✅ AI Review complete!");
-    return response;
+    return result;
 
   } catch (error) {
-    console.error("❌ Gemini API error:", error.message);
+    console.error("❌ OpenAI API error:", error.message);
     return null;
   }
 }
