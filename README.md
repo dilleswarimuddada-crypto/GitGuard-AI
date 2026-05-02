@@ -21,4 +21,4 @@ checking Week 2 level
 webhook token and Gemini API Key fixing
 Testing open ai update 
 number of times to solve token issues
-using groq and delete gemini
+using groq it will also cause issues I triggering
