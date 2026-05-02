@@ -1,46 +1,47 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 
-// Initialize Gemini with API key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Initialize Groq
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 async function reviewCode(diff) {
   try {
-    console.log("\n🤖 Sending diff to Gemini AI for review...");
+    console.log("\n🤖 Sending diff to Groq AI for review...");
 
-    // Use latest working model
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash"
-    });
-
-    const prompt = `
-You are an expert code reviewer.
-
+    const completion = await groq.chat.completions.create({
+      model: "llama3-8b-8192", // fast + free model
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert code reviewer.",
+        },
+        {
+          role: "user",
+          content: `
 Analyze the following code diff and identify:
 
 1. Bugs or logical errors
-2. Security vulnerabilities
-3. Performance issues
-4. Suggestions for improvement
-
-For each issue:
-- Explain the problem
-- Show corrected code (if possible)
+2. Security issues
+3. Performance improvements
+4. Suggestions
 
 If code is good, say "Code looks good".
 
 Code diff:
 ${diff}
-`;
+          `,
+        },
+      ],
+    });
 
-    const result = await model.generateContent(prompt);
-
-    const response = result.response.text();
+    const response = completion.choices[0].message.content;
 
     console.log("✅ AI Review complete!");
     return response;
 
   } catch (error) {
-    console.error("❌ Gemini API error:", error.message);
+    console.error("❌ Groq API error:", error.message);
     return null;
   }
 }
