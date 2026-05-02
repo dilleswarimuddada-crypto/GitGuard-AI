@@ -10,7 +10,7 @@ async function reviewCode(diff) {
     console.log("\n🤖 Sending diff to Groq AI for review...");
 
     const completion = await groq.chat.completions.create({
-      model: "llama3-8b-8192", // fast + free model
+      model: "llama3-70b-8192", // fast + free model
       messages: [
         {
           role: "system",
