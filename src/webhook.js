@@ -97,10 +97,10 @@ app.post("/webhook", async (req, res) => {
           console.log("-".repeat(50));
           console.log(review);
           console.log("-".repeat(50));
+          await postReviewComment(owner, repo, prNumber, review);
         }
       }
-await postReviewComment(owner, repo, prNumber, review);
-    }
+    
       console.log(
         `\n🔎 PR is ready for review — Diff Analyzer will run here (Week 2)`
       );
