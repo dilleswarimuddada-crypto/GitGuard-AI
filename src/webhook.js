@@ -2,7 +2,26 @@ require("dotenv").config();
 
 const express = require("express");
 const crypto = require("crypto");
+const { Octokit } = require("@octokit/rest");
 
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+
+async function postReviewComment(owner, repo, prNumber, review) {
+  try {
+    await octokit.issues.createComment({
+      owner,
+      repo,
+      issue_number: prNumber,
+      body: `## 🤖 AI Code Review\n\n${review}`,
+    });
+
+    console.log("✅ Comment posted to PR!");
+  } catch (error) {
+    console.error("❌ Error posting comment:", error.message);
+  }
+}
 const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = "0.0.0.0";
@@ -80,7 +99,8 @@ app.post("/webhook", async (req, res) => {
           console.log("-".repeat(50));
         }
       }
-
+await postReviewComment(owner, repo, prNumber, review);
+    }
       console.log(
         `\n🔎 PR is ready for review — Diff Analyzer will run here (Week 2)`
       );
