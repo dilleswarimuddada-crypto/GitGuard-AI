@@ -1,49 +1,29 @@
-const Groq = require("groq-sdk");
-
-// Initialize Groq
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
-
+// Mock reviewer — no API needed
 async function reviewCode(diff) {
-  try {
-    console.log("\n🤖 Sending diff to Groq AI for review...");
+  console.log("\n🤖 Mock AI Review running...");
 
-    const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192", // fast + free model
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert code reviewer.",
-        },
-        {
-          role: "user",
-          content: `
-Analyze the following code diff and identify:
+  // very simple rule-based checks (just to show output)
+  let findings = [];
 
-1. Bugs or logical errors
-2. Security issues
-3. Performance improvements
-4. Suggestions
-
-If code is good, say "Code looks good".
-
-Code diff:
-${diff}
-          `,
-        },
-      ],
-    });
-
-    const response = completion.choices[0].message.content;
-
-    console.log("✅ AI Review complete!");
-    return response;
-
-  } catch (error) {
-    console.error("❌ Groq API error:", error.message);
-    return null;
+  if (diff.includes("console.log(")) {
+    findings.push("- Remove debug console.log statements before production.");
   }
+
+  if (diff.includes("password") || diff.includes("token")) {
+    findings.push("- Sensitive data detected. Avoid committing secrets.");
+  }
+
+  if (diff.length < 50) {
+    findings.push("- Very small change. No major issues found.");
+  }
+
+  const result =
+    findings.length > 0
+      ? "### Review Findings:\n" + findings.join("\n")
+      : "### Review Result:\nCode looks good. No major issues found.";
+
+  console.log("✅ Review complete!");
+  return result;
 }
 
 module.exports = { reviewCode };
