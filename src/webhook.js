@@ -3,6 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const crypto = require("crypto");
 const fs = require("fs"); // ✅ NEW (Week 4)
+
+// ✅ TEMP TEST LINE (ADD HERE)
+fs.writeFileSync("reviews.log", "Test file");
+
 const { Octokit } = require("@octokit/rest");
 
 const octokit = new Octokit({
