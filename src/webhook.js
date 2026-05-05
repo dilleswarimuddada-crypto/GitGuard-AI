@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const crypto = require("crypto");
+const fs = require("fs"); // ✅ NEW (Week 4)
 const { Octokit } = require("@octokit/rest");
 
 const octokit = new Octokit({
@@ -22,6 +23,7 @@ async function postReviewComment(owner, repo, prNumber, review) {
     console.error("❌ Error posting comment:", error.message);
   }
 }
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = "0.0.0.0";
@@ -57,7 +59,6 @@ function verifyGitHubSignature(req) {
 
 // — Webhook Endpoint
 app.post("/webhook", async (req, res) => {
-  // Step 1: Verify the request is genuinely from GitHub
   if (!verifyGitHubSignature(req)) {
     console.log("❌ Invalid signature — request rejected");
     return res.status(401).send("Unauthorized");
@@ -66,7 +67,6 @@ app.post("/webhook", async (req, res) => {
   const event = req.headers["x-github-event"];
   const payload = req.body;
 
-  // Step 2: Filter for Pull Request events only
   if (event === "pull_request") {
     const action = payload.action;
     const prNumber = payload.number;
@@ -79,9 +79,7 @@ app.post("/webhook", async (req, res) => {
     console.log(`Title  : ${prTitle}`);
     console.log(`Action : ${action}`);
 
-    // Only act when a PR is opened or updated
     if (action === "opened" || action === "synchronize") {
-      // Week 2: Fetch diff and analyze
       const [owner, repo] = payload.repository.full_name.split("/");
 
       const { fetchPRDiff } = require("./diffAnalyzer");
@@ -97,10 +95,16 @@ app.post("/webhook", async (req, res) => {
           console.log("-".repeat(50));
           console.log(review);
           console.log("-".repeat(50));
+
+          // ✅ Post comment to GitHub
           await postReviewComment(owner, repo, prNumber, review);
+
+          // ✅ WEEK 4: Save review to file
+          fs.appendFileSync("reviews.log", review + "\n\n");
+          console.log("📝 Review saved to reviews.log");
         }
       }
-    
+
       console.log(
         `\n🔎 PR is ready for review — Diff Analyzer will run here (Week 2)`
       );
