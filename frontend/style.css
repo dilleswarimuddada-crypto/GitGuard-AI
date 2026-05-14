@@ -1,0 +1,79 @@
+body{
+  background:#050816;
+  color:white;
+  font-family:Arial;
+  margin:0;
+  padding:0;
+}
+
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px;
+  background:#0b1023;
+}
+
+.status-btn{
+  background:#00ff88;
+  border:none;
+  padding:10px 20px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.cards{
+  display:flex;
+  gap:20px;
+  padding:20px;
+}
+
+.card{
+  flex:1;
+  background:#10182b;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 0 10px #000;
+}
+
+.card p{
+  font-size:30px;
+  font-weight:bold;
+}
+
+.danger{
+  border-left:5px solid red;
+}
+
+.success{
+  border-left:5px solid lime;
+}
+
+.table-section{
+  margin:20px;
+  background:#10182b;
+  padding:20px;
+  border-radius:15px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  padding:15px;
+  text-align:left;
+}
+
+tr{
+  border-bottom:1px solid #333;
+}
+
+.clean{
+  color:lime;
+}
+
+.warning{
+  color:orange;
+}
