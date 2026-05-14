@@ -26,6 +26,7 @@ async function postReviewComment(owner, repo, prNumber, review) {
 }
 
 const app = express();
+app.use(express.static("."));
 const PORT = process.env.PORT || 5000;
 const HOST = "0.0.0.0";
 
