@@ -60,3 +60,8 @@ This project includes a review logging feature that stores AI-generated code rev
 - The review is:
   - Posted as a comment on the PR
   - Saved into `reviews.log`
+
+Frontend Interface
+The GitGuard AI frontend dashboard provides a modern and interactive user interface to monitor pull request analysis results.
+It displays important metrics such as total PRs scanned, detected issues, security score, and live analysis feed in a clean dashboard layout.
+The frontend was developed using HTML and CSS to create a responsive and visually appealing interface for better user experience.
